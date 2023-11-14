@@ -228,12 +228,7 @@ void setup() {
 
   // Sensors
   Wire.begin(21,22);
-<<<<<<< HEAD
   if (!bmp.begin()) {
-=======
-  unsigned status = bmp.begin();
-  if (!status) {
->>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
     Serial.println(F("Could not find a valid BMP280 sensor. Check wiring."));
   } else {
     Serial.println("BMP280 found.");
