@@ -1,3 +1,5 @@
+#include <queue>
+
 // IR Receiver module
 const uint16_t irLedPin = 5;
 
@@ -123,3 +125,13 @@ const char *HUMIDITY_TOPIC = "home/living/entertainment/tv/controller/humidity/p
 const char *LWT = "home/living/entertainment/tv/controller/logged-in/boolean";
 const char *IR_TOPIC = "home/living/entertainment/tv/controller/ircode";
 const char *RSSI_TOPIC = "home/living/entertainment/tv/controller/rssi";
+
+// create a queue of MQTT messages to send
+// Define the MQTTMessage struct
+struct MQTTMessage {
+  String topic;
+  String payload;
+};
+
+// Declare the queue of MQTT messages
+std::queue<MQTTMessage> mqttMessageQueue;

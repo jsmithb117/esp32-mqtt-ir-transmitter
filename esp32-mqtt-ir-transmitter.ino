@@ -57,6 +57,13 @@ void subscribeToAllTopics() {
     mqttClient.subscribe(subscribeTopics[i]);
   }
 }
+void publishQueue() {
+  while (!mqttMessageQueue.empty()) {
+    MQTTMessage message = mqttMessageQueue.front();
+    mqttMessageQueue.pop();
+    mqttClient.publish(message.topic.c_str(), message.payload.c_str());
+  }
+}
 void connectMqtt() {
   Serial.print("Attempting MQTT connection...");
   String clientId = MQTT_CLIENT_ID + WiFi.macAddress();
@@ -65,7 +72,10 @@ void connectMqtt() {
   if (mqttClient.connect(clientId.c_str(), mqttUser, mqttPassword, LWT, 0, true, "0")) {
     Serial.println("connected MQTT");
     // let the network know this device is online
-    mqttClient.publish(LWT,"1");
+    if (!mqttClient.publish(LWT,"1")) {
+      pushMessageToQueue(LWT, "1");
+    }
+    publishQueue();
     subscribeToAllTopics();
   } else {
     Serial.print("failed, rc=");
@@ -122,7 +132,12 @@ void tofSensorLoop() {
     Serial.println(" | PWR command sent");
   }
 }
-
+void pushMessageToQueue(const char* topic, const char* payload) {
+  MQTTMessage message;
+  message.topic = topic;
+  message.payload = payload;
+  mqttMessageQueue.push(message);
+}
 void bmp280Loop(bool force = false) {
   static float prevPressure;
   float pressure = bmp.readPressure() / 100.0F;
@@ -130,7 +145,9 @@ void bmp280Loop(bool force = false) {
     prevPressure = pressure;
     char pressureStr[10];
     dtostrf(pressure, 4, 1, pressureStr);
-    mqttClient.publish(PRESSURE_TOPIC, pressureStr);
+    if (!mqttClient.publish(PRESSURE_TOPIC, pressureStr)) {
+      pushMessageToQueue(PRESSURE_TOPIC, pressureStr);
+    }
     Serial.print("Pressure: ");
     Serial.println(pressure);
   }
@@ -145,7 +162,9 @@ void aht20Loop(bool force = false) {
     prevTempC = tempC.temperature;
     char tempFStr[10];
     dtostrf(tempF, 4, 1, tempFStr);
-    mqttClient.publish(TEMPERATURE_TOPIC, tempFStr);
+    if (!mqttClient.publish(TEMPERATURE_TOPIC, tempFStr)) {
+      pushMessageToQueue(TEMPERATURE_TOPIC, tempFStr);
+    }
     Serial.print("Temperature F: ");
     Serial.println(tempFStr);
   }
@@ -153,7 +172,9 @@ void aht20Loop(bool force = false) {
     prevHumidity = humidity.relative_humidity;
     char humidityStr[10];
     dtostrf(humidity.relative_humidity, 4, 1, humidityStr);
-    mqttClient.publish(HUMIDITY_TOPIC, humidityStr);
+    if (!mqttClient.publish(HUMIDITY_TOPIC, humidityStr)) {
+      pushMessageToQueue(HUMIDITY_TOPIC, humidityStr);
+    }
     Serial.print("Humidity: ");
     Serial.println(humidityStr);
   }
@@ -165,7 +186,9 @@ void irReceiverLoop() {
     String humanResult = resultToHumanReadableBasic(&results);
     Serial.print("IR Receiver: ");
     Serial.println(humanResult);
-    mqttClient.publish(IR_TOPIC, humanResult.c_str());
+    if (!mqttClient.publish(IR_TOPIC, humanResult.c_str())) {
+      pushMessageToQueue(IR_TOPIC, humanResult.c_str());
+    }
   }
 }
 void wifiLoop() {
@@ -177,7 +200,9 @@ void wifiLoop() {
   static long prevRssi;
   if (abs(rssi - prevRssi) > 2) {
     prevRssi = rssi;
-    mqttClient.publish(RSSI_TOPIC, String(rssi).c_str());
+    if (!mqttClient.publish(RSSI_TOPIC, String(rssi).c_str())) {
+      pushMessageToQueue(RSSI_TOPIC, String(rssi).c_str());
+    }
     Serial.print("RSSI: ");
     Serial.println(rssi);
   }
@@ -187,12 +212,7 @@ void setup() {
   while (! Serial) {
     delay(10);
   }
-  // IR Transmitter
-  irsend.begin();
 
-  // IR Receiver
-  assert(irutils::lowLevelSanityCheck() == 0);
-  irrecv.enableIRIn();
 
   // Sensors
   Wire.begin(21,22);
@@ -223,6 +243,13 @@ void setup() {
   // force sensors to report on startup
   bmp280Loop(true);
   aht20Loop(true);
+
+  // IR Transmitter
+  irsend.begin();
+
+  // IR Receiver
+  assert(irutils::lowLevelSanityCheck() == 0);
+  irrecv.enableIRIn();
 }
 
 int count = 0;
