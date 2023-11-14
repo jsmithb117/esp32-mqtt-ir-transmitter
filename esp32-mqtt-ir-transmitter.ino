@@ -115,20 +115,12 @@ void tofSensorLoop() {
     irsend.sendNEC(PWR);
     // Resume IR receiver
     irrecv.enableIRIn();
-<<<<<<< HEAD
-
-=======
->>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
     Serial.print("range: ");
     Serial.println(measurement.RangeMilliMeter);
     Serial.print("Range is close: ");
     Serial.print(rangeIsClose);
     Serial.println(" | PWR command sent");
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
 }
 
 void bmp280Loop(bool force = false) {
