@@ -1,5 +1,11 @@
-// pin assignment for IR LED module
+// IR Receiver module
 const uint16_t irLedPin = 5;
+
+// IR transmitter module
+const uint16_t kRecvPin = 4;
+const uint16_t kCaptureBufferSize = 1024;
+const uint8_t kTimeout = 15;
+
 
 
 // BMP280/AHT20 constants
@@ -115,3 +121,5 @@ const char *PRESSURE_TOPIC = "home/living/entertainment/tv/controller/pressure/p
 const char *TEMPERATURE_TOPIC = "home/living/entertainment/tv/controller/temperature/fahrenheit";
 const char *HUMIDITY_TOPIC = "home/living/entertainment/tv/controller/humidity/percent";
 const char *LWT = "home/living/entertainment/tv/controller/logged-in/boolean";
+const char *IR_TOPIC = "home/living/entertainment/tv/controller/ircode";
+const char *RSSI_TOPIC = "home/living/entertainment/tv/controller/rssi";
