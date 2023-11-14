@@ -1,6 +1,17 @@
-// pin assignment for IR LED module
-const uint16_t kIrLed = 5;
+// IR Receiver module
+const uint16_t irLedPin = 5;
 
+// IR transmitter module
+const uint16_t kRecvPin = 4;
+const uint16_t kCaptureBufferSize = 1024;
+const uint8_t kTimeout = 15;
+
+
+
+// BMP280/AHT20 constants
+#define SEALEVELPRESSURE_HPA (1013.25)
+
+const char *DEVICE_TOPIC = "home/living/entertainment/tv/controller";
 // Remote control commands and topic assignments
 // Use the or IRrecvDumpV3 example to find the codes for your remote
 #define PWR 0x2FD48B7
@@ -103,3 +114,12 @@ const char* subscribeTopics[] = {
 // MQTT constants
 const String MQTT_CLIENT_ID = "esp-thermostat-";
 IPAddress mqttServer(192, 168, 1, 41);
+
+// Topics
+//$building/$room/$domain/$device_name/$topic_class/$data_type/$unit(optional)
+const char *PRESSURE_TOPIC = "home/living/entertainment/tv/controller/pressure/pascal";
+const char *TEMPERATURE_TOPIC = "home/living/entertainment/tv/controller/temperature/fahrenheit";
+const char *HUMIDITY_TOPIC = "home/living/entertainment/tv/controller/humidity/percent";
+const char *LWT = "home/living/entertainment/tv/controller/logged-in/boolean";
+const char *IR_TOPIC = "home/living/entertainment/tv/controller/ircode";
+const char *RSSI_TOPIC = "home/living/entertainment/tv/controller/rssi";
