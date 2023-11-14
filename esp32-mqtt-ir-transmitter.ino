@@ -36,7 +36,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // transmit topic code
   String receivedTopic = String(topic);
   const int numTopicIRCodes = sizeof(topicToIRCode) / sizeof(topicToIRCode[0]);
-<<<<<<< HEAD
   // TODO: Use a map instead of a loop
   for (int i = 0; i < numTopicIRCodes; i++) {
     if (receivedTopic.equals(topicToIRCode[i].topic)) {
@@ -45,23 +44,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
       // Transmit
       irsend.sendNEC(topicToIRCode[i].irCode);
       // Resume IR receiver
-=======
-  for (int i = 0; i < numTopicIRCodes; i++) {
-    if (receivedTopic.equals(topicToIRCode[i].topic)) {
-      irrecv.disableIRIn();
-      irsend.sendNEC(topicToIRCode[i].irCode);
->>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
       irrecv.enableIRIn();
       Serial.print(topicToIRCode[i].topic);
       Serial.println(" command sent");
       return;
     }
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
-  Serial.println("Unknown topic, no command sent");
 }
 void subscribeToAllTopics() {
   const int numTopics = sizeof(subscribeTopics) / sizeof(subscribeTopics[0]);
@@ -109,17 +97,9 @@ void connectWifi() {
 }
 void tofSensorLoop() {
   VL53L0X_RangingMeasurementData_t measurement;
-<<<<<<< HEAD
-  // Pause IR receiver
-  irrecv.disableIRIn();
-  // take measurement
-  lox.getSingleRangingMeasurement(&measurement);
-  // Resume IR receiver
-=======
   // disable IR Receiver for measurement
   irrecv.disableIRIn();
   lox.getSingleRangingMeasurement(&measurement);
->>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
   irrecv.enableIRIn();
 
   bool rangeIsClose = measurement.RangeMilliMeter < 50;
@@ -209,10 +189,6 @@ void wifiLoop() {
     Serial.print("RSSI: ");
     Serial.println(rssi);
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
 }
 void setup() {
   Serial.begin(115200);
