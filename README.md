@@ -3,6 +3,7 @@ Control your infrared-controlled devices with WiFi using an esp32 and IR transmi
 
 ### Time Of Flight sensor
   Detects whether XBox One controller is in front of sensor.
+  
   Sends IR PWR command on state change.
   
 ### IR Receiver
@@ -10,9 +11,11 @@ Control your infrared-controlled devices with WiFi using an esp32 and IR transmi
   Disabled during IR Transmit events and TOF sensor
 
 ### IR Transmitter
-  When this device receives an MQTT subscription message, IR Transmitter transmits the message
+  When this device receives an MQTT subscription message, IR Transmitter transmits the message.
+  
   Also sends the PWR command when TOF sensor state changes.
 
 ### Temp/Humidity/Barometric pressure sensors
   Expands monitoring of the household.
+  
   Sends raw data to MQTT server.
