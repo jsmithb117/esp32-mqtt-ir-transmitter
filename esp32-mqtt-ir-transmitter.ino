@@ -36,6 +36,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // transmit topic code
   String receivedTopic = String(topic);
   const int numTopicIRCodes = sizeof(topicToIRCode) / sizeof(topicToIRCode[0]);
+<<<<<<< HEAD
   // TODO: Use a map instead of a loop
   for (int i = 0; i < numTopicIRCodes; i++) {
     if (receivedTopic.equals(topicToIRCode[i].topic)) {
@@ -44,12 +45,22 @@ void callback(char* topic, byte* payload, unsigned int length) {
       // Transmit
       irsend.sendNEC(topicToIRCode[i].irCode);
       // Resume IR receiver
+=======
+  for (int i = 0; i < numTopicIRCodes; i++) {
+    if (receivedTopic.equals(topicToIRCode[i].topic)) {
+      irrecv.disableIRIn();
+      irsend.sendNEC(topicToIRCode[i].irCode);
+>>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
       irrecv.enableIRIn();
       Serial.print(topicToIRCode[i].topic);
       Serial.println(" command sent");
       return;
     }
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
   Serial.println("Unknown topic, no command sent");
 }
 void subscribeToAllTopics() {
@@ -98,11 +109,17 @@ void connectWifi() {
 }
 void tofSensorLoop() {
   VL53L0X_RangingMeasurementData_t measurement;
+<<<<<<< HEAD
   // Pause IR receiver
   irrecv.disableIRIn();
   // take measurement
   lox.getSingleRangingMeasurement(&measurement);
   // Resume IR receiver
+=======
+  // disable IR Receiver for measurement
+  irrecv.disableIRIn();
+  lox.getSingleRangingMeasurement(&measurement);
+>>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
   irrecv.enableIRIn();
 
   bool rangeIsClose = measurement.RangeMilliMeter < 50;
@@ -118,13 +135,20 @@ void tofSensorLoop() {
     irsend.sendNEC(PWR);
     // Resume IR receiver
     irrecv.enableIRIn();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
     Serial.print("range: ");
     Serial.println(measurement.RangeMilliMeter);
     Serial.print("Range is close: ");
     Serial.print(rangeIsClose);
     Serial.println(" | PWR command sent");
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
 }
 
 void bmp280Loop(bool force = false) {
@@ -185,6 +209,10 @@ void wifiLoop() {
     Serial.print("RSSI: ");
     Serial.println(rssi);
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
 }
 void setup() {
   Serial.begin(115200);
@@ -200,7 +228,12 @@ void setup() {
 
   // Sensors
   Wire.begin(21,22);
+<<<<<<< HEAD
   if (!bmp.begin()) {
+=======
+  unsigned status = bmp.begin();
+  if (!status) {
+>>>>>>> 129b8161684332102d368e55ecb4ed3fa9376073
     Serial.println(F("Could not find a valid BMP280 sensor. Check wiring."));
   } else {
     Serial.println("BMP280 found.");
