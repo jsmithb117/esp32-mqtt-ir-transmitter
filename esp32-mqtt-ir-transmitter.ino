@@ -195,11 +195,14 @@ void wifiLoop() {
   if (WiFi.status() != WL_CONNECTED) {
     connectWifi();
   }
-  // get RSSI and report
+  // get RSSI and report no more often than 15 seconds
   long rssi = WiFi.RSSI();
   static long prevRssi;
-  if (abs(rssi - prevRssi) > 2) {
+  long now = millis();
+  static long prevMillis;
+  if (abs(rssi - prevRssi) > 2 && now - prevMillis > 15000) {
     prevRssi = rssi;
+    prevMillis = now;
     if (!mqttClient.publish(RSSI_TOPIC, String(rssi).c_str())) {
       pushMessageToQueue(RSSI_TOPIC, String(rssi).c_str());
     }
